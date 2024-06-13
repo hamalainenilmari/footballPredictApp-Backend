@@ -2,10 +2,7 @@ const mongoose = require('mongoose')
 //import mongoose from 'mongoose'
 
 const matchSchema = new mongoose.Schema({
-    matchId: {
-        type: String,
-        required: true
-    },
+    date: String,
     home: {
         type: String,
         required: true,
@@ -27,6 +24,8 @@ const matchSchema = new mongoose.Schema({
     winner: {
     }
 })
+
+matchSchema.index({ date: 1, home: 1, away: 1 }, { unique: true });
 
 matchSchema.set('toJSON', {
     transform: (document, returnedObject) => {
