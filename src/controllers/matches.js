@@ -1,13 +1,16 @@
 const axios = require('axios');
 const matchesRouter = require('express').Router()
 const Match = require('../models/match')
+const uuid = require('uuid');
+
 
 matchesRouter.post('/', async (request, res) => {
     const {date} = request.body
     console.log("date:" + request.body)
+    /*
     if (!date) {
         return res.status(400).send('date parameter is required');
-    }
+    }*/
 
     const matches = []
     /*
@@ -77,41 +80,19 @@ matchesRouter.get('/', async (req, res) => {
     }
 })
 
-module.exports = matchesRouter
-/*
-const matches = [
-    {
-        matchId: 1,
-        date: "2024-06-14",
-        home: "germany",
-        homeLogo: "https://media.api-sports.io/football/teams/25.png",
-        away: "scotland",
-        awayLogo:  "https://media.api-sports.io/football/teams/1108.png",
-        homeGoals: 2,
-        awayGoals: 0,
-        winner: "germany",
-    },
-    {
-    matchId: 2,
-    date: "2024-06-15",
-    home: "england",
-    homeLogo: "https://media.api-sports.io/football/teams/26.png",
-    away: "japan",
-    awayLogo:  "https://media.api-sports.io/football/teams/1105.png",
-    homeGoals: null,
-    awayGoals: null,
-    winner: null,
-    },
-    {
-    matchId: 3,
-    date: "2024-06-15",
-    home: "italia",
-    homeLogo: "https://media.api-sports.io/football/teams/21.png",
-    away: "ukraina",
-    awayLogo:  "https://media.api-sports.io/football/teams/1100.png",
-    homeGoals: null,
-    awayGoals: null,
-    winner: null,
+matchesRouter.get('/id/:id', async (req, res) => {
+    try {
+        console.log(typeof req.params.id)
+        const match = await Match.findOne({matchId: req.params.id});
+        if (!match) {
+            // No predictions found for the provided username
+            return res.status(404).send('No match found from the id');
+        }
+        res.json(prediction);
+    } catch (error) {
+        console.error(`Error fetching match by id`, error);
+        res.status(500).send('Error fetching match by id');
     }
-]
-    */
+})
+
+module.exports = matchesRouter

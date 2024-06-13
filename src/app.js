@@ -9,6 +9,7 @@ const middleware = require('./utils/middleware')
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
 const matchesRouter = require('./controllers/matches')
+const predictionsRouter = require('./controllers/predictions')
 
 mongoose.set('strictQuery', false)
 
@@ -34,6 +35,7 @@ app.use(middleware.tokenExtractor)
 app.use('/api/login', loginRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/matches', matchesRouter)
+app.use('/api/predictions', predictionsRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)

@@ -1,8 +1,10 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const uuid = require('uuid');
 //import mongoose from 'mongoose'
 
 const matchSchema = new mongoose.Schema({
     date: String,
+    id: { type: String, default: uuid.v4 },
     home: {
         type: String,
         required: true,
@@ -29,7 +31,7 @@ matchSchema.index({ date: 1, home: 1, away: 1 }, { unique: true });
 
 matchSchema.set('toJSON', {
     transform: (document, returnedObject) => {
-      returnedObject.id = returnedObject._id.toString()
+      //returnedObject.id = returnedObject._id.toString()
       delete returnedObject._id
       delete returnedObject.__v
     }

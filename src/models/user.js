@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const uuid = require('uuid');
 //import mongoose from 'mongoose'
 
 const userSchema = new mongoose.Schema({
@@ -11,6 +12,7 @@ const userSchema = new mongoose.Schema({
     name: {
         type: String
     },
+    id: { type: String, default: uuid.v4 },
     // TODO add matches etc
     passwordHash: {
         type: String,
