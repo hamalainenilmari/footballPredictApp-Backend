@@ -8,8 +8,8 @@ const { request } = require('../app');
 predictionsRouter.post('/', async (request, res) => {
 
     const {username, matchId, home, away, homeGoals, awayGoals, winner} = request.body
-    console.log(JSON.stringify(request.body))
-    if ( !username | !matchId | !home | !away | !homeGoals | !awayGoals | !winner) {
+    console.log(username, matchId, home, away, homeGoals, awayGoals, winner)
+    if ( !username | !matchId | !home | !away | homeGoals === undefined | awayGoals === undefined | !winner) {
         return res.status(400).send('missing parameters');
     }
 
@@ -44,9 +44,11 @@ predictionsRouter.post('/', async (request, res) => {
 
             if (existingPrediciton) {
                 console.log("Prediction already exists:", JSON.stringify(existingPrediciton));
+                res.status(400).send("Prediction for this match by this user already exists:")
             } else {
                 const savedPrediction = await newPrediction.save()
                 console.log("Prediction saved successfully:", JSON.stringify(savedPrediction));
+                res.status(201).send("Prediction saved successfully:")
             }
         }
          catch (error) {
