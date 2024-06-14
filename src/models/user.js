@@ -13,6 +13,10 @@ const userSchema = new mongoose.Schema({
         type: String
     },
     id: { type: String, default: uuid.v4 },
+    points: {
+        type: Number,
+        default: 0
+    },
     // TODO add matches etc
     passwordHash: {
         type: String,

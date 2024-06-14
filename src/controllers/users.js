@@ -31,4 +31,20 @@ usersRouter.get('/', async (request, response) => {
     response.json(users)
 })
 
+usersRouter.get('/:username', async (req, res) => {
+    try {
+        console.log("searching for player: " + req.params.username)
+        const user = await User.find({username: req.params.username})
+
+        if (!user) {
+            // No predictions found for the provided username
+            return res.status(404).send('No user found for the provided username');
+        }
+        res.json(user);
+    } catch (error) {
+        console.error(`Error fetching user by username`, error);
+        res.status(500).send('Error fetching user by username');
+    }
+})
+
 module.exports = usersRouter

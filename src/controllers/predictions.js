@@ -69,7 +69,7 @@ predictionsRouter.get('/', async (req, res) => {
 predictionsRouter.get('/id/:id', async (req, res) => {
     try {
         console.log(req.params.id)
-        const prediction = await Prediction.findOne({id: req.params.id});
+        const prediction = await Prediction.findOne( {id: req.params.id} );
         if (!prediction || prediction === 0) {
             // No predictions found for the provided username
             return res.status(404).send('No prediction found from the id');
@@ -94,6 +94,22 @@ predictionsRouter.get('/username/:username', async (req, res) => {
     } catch (error) {
         console.error(`Error fetching prediction by username`, error);
         res.status(500).send('Error fetching prediction by username');
+    }
+})
+
+predictionsRouter.get('/match/:matchId', async (req, res) => {
+    try {
+        console.log(req.params.matchId)
+        const predictionsByMatchId = await Prediction.find({matchId: req.params.matchId})
+
+        if (!predictionsByMatchId) {
+            // No predictions found for the provided username
+            return res.status(404).send('No predictions found for the provided matchId');
+        }
+        res.json(predictionsByMatchId);
+    } catch (error) {
+        console.error(`Error fetching prediction by matchId`, error);
+        res.status(500).send('Error fetching prediction by matchId');
     }
 })
 
