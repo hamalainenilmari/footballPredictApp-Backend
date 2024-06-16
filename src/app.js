@@ -48,11 +48,17 @@ app.use(middleware.errorHandler)
 
 // use '*/30 * * * * *' for testing, runs every 30 secs
 // use '0 */2 * * *' in production, runs every 2 hours
-cron.schedule('0 */2 * * *', async () => {
-  // This function will run every 2 hours
-  logger.info('Cron job running...');
-  // Call your function from matchResultUpdater.js
-  await matchResultUpdater.fetchMatches();
+cron.schedule('*/15 * * * *', async () => {
+  try {
+    const now = new Date();
+    const hour = now.getHours();
+    logger.info("time now " + hour)
+    if (hour >= 17)
+      logger.info('Cron job running...');
+      await matchResultUpdater.fetchMatches();
+  } catch (err) {
+    logger.error("error: " + err)
+  }
 });
 
 module.exports = app

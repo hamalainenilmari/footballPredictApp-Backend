@@ -23,10 +23,16 @@ matchesRouter.post('/', async (request, res) => {
     */
     if (1 == 1) {
         try {
+            // all euro matches
+            /*
             const matchResponse = await axios.get(
                 `https://v3.football.api-sports.io/fixtures?from=2024-06-14&to=2024-07-15&league=4&season=2024`, {
                 headers: {'x-apisports-key': process.env.x_apisports_key}
             });
+            */
+
+            // matches of a single day
+            // https://v3.football.api-sports.io/fixtures?date=2024-06-14&league=4&season=2024
             console.log("matchData: " + matchResponse.data.response)
             for (const matchDay of matchResponse.data.response) {
                 const { teams, fixture, goals } = matchDay;

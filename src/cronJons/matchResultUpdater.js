@@ -11,8 +11,8 @@ const fetchMatches = async () => {
 
   try {
     //const updates = await Prediction.updateMany({}, { $set: { points: null } })
+
     // get all fixtures from the cup
-    
     const response = await axios.get(`https://v3.football.api-sports.io/fixtures?from=2024-06-14&to=2024-07-15&league=4&season=2024`, {
       headers: {'x-apisports-key': process.env.x_apisports_key}});
 
