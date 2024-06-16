@@ -48,7 +48,7 @@ app.use(middleware.errorHandler)
 
 // use '*/30 * * * * *' for testing, runs every 30 secs
 // use '0 */2 * * *' in production, runs every 2 hours
-cron.schedule('0 */2 * * *', async () => {
+cron.schedule('*/30 * * * * *', async () => {
   // This function will run every 2 hours
   logger.info('Cron job running...');
   // Call your function from matchResultUpdater.js
