@@ -1,9 +1,8 @@
-const axios = require('axios');
 const predictionsRouter = require('express').Router()
 const Prediction = require('../models/prediction')
 const User = require('../models/user')
 const Match = require('../models/match');
-const { request } = require('../app');
+const { isString, isNumber } = require('lodash');
 
 predictionsRouter.post('/', async (request, res) => {
 
@@ -12,49 +11,49 @@ predictionsRouter.post('/', async (request, res) => {
     if ( !username | !matchId | !home | !away | homeGoals === undefined | awayGoals === undefined | !winner) {
         return res.status(400).send('missing parameters');
     }
-
+    if (!isNumber(homeGoals) || !isNumber(awayGoals)) {
+        return res.status(400).send('goals must be of type number')
+    }
    
-    if (1 == 1) {
-        try {   
-            const user = await User.findOne({ username: username });
-            const match = await Match.findOne({id: matchId})
-            if (!user) {
-                console.log('userId not found')
-                return res.status(400).send('userId not found');
-            }
-            if (!match) {
-                console.log('matchId not found')
-                return res.status(400).send('matchId not found');
-            }
-
-
-            const newPrediction = new Prediction({
-                username: username,
-                matchId: matchId,
-                home: home,
-                away: away,
-                homeGoals: homeGoals,
-                awayGoals: awayGoals,
-                winner: winner
-            })
-            const existingPrediciton = await Prediction.findOne({
-                username: username,
-                matchId: matchId,
-            });
-
-            if (existingPrediciton) {
-                console.log("Prediction already exists:", JSON.stringify(existingPrediciton));
-                res.status(400).send("Prediction for this match by this user already exists:")
-            } else {
-                const savedPrediction = await newPrediction.save()
-                console.log("Prediction saved successfully:", JSON.stringify(savedPrediction));
-                res.status(201).send("Prediction saved successfully:")
-            }
+    try {
+        const user = await User.findOne({ username: username });
+        const match = await Match.findOne({id: matchId})
+        if (!user) {
+            console.log('userId not found')
+            return res.status(400).send('userId not found');
         }
-         catch (error) {
-            console.log("error saving a prediction to the server:", error);
-            res.status(500).send(`error saving a prediction to the server: ${error}`)
+        if (!match) {
+            console.log('matchId not found')
+            return res.status(400).send('matchId not found');
         }
+
+
+        const newPrediction = new Prediction({
+            username: username,
+            matchId: matchId,
+            home: home,
+            away: away,
+            homeGoals: homeGoals,
+            awayGoals: awayGoals,
+            winner: winner
+        })
+        const existingPrediciton = await Prediction.findOne({
+            username: username,
+            matchId: matchId,
+        });
+
+        if (existingPrediciton) {
+            console.log("Prediction already exists:", JSON.stringify(existingPrediciton));
+            res.status(400).send("Prediction for this match by this user already exists:")
+        } else {
+            const savedPrediction = await newPrediction.save()
+            console.log("Prediction saved successfully:", JSON.stringify(savedPrediction));
+            res.status(201).send("Prediction saved successfully:")
+        }
+    }
+        catch (error) {
+        console.log("error saving a prediction to the server:", error);
+        res.status(500).send(`error saving a prediction to the server: ${error}`)
     }
 })
 

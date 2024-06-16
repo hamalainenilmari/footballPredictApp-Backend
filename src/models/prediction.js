@@ -29,6 +29,10 @@ const predictionSchema = new mongoose.Schema({
     winner: {
         type: String,
         required: true
+    },
+    points: {
+        type: Number,
+        default: null
     }
 })
 
