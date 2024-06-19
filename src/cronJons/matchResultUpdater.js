@@ -16,6 +16,7 @@ const fetchMatches = async () => {
     const day = String(date.getDate()).padStart(2, '0');
     
     const formattedDate = `${year}-${month}-${day}`;
+    logger.info(formattedDate)
 
     // get all fixtures from the cup
     const response = await axios.get(`https://v3.football.api-sports.io/fixtures?from=${formattedDate}&to=2024-07-15&league=4&season=2024`, {
