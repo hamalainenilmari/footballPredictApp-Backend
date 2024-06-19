@@ -48,7 +48,7 @@ app.use(middleware.errorHandler)
 
 // use '*/30 * * * * *' for testing, runs every 30 secs
 // use '0 */2 * * *' in production, runs every 2 hours
-cron.schedule('*/15 * * * *', async () => {
+cron.schedule('*/30 * * * * *', async () => {
   try {
     const now = new Date();
     const hour = now.getHours();

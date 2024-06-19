@@ -9,11 +9,16 @@ const calculatePoints = require('../utils/calculatePredictionPoints')
 const fetchMatches = async () => {
   logger.info("starting to fetch new matches")
 
-  try {
-    //const updates = await Prediction.updateMany({}, { $set: { points: null } })
+  try {  
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    const formattedDate = `${year}-${month}-${day}`;
 
     // get all fixtures from the cup
-    const response = await axios.get(`https://v3.football.api-sports.io/fixtures?from=2024-06-14&to=2024-07-15&league=4&season=2024`, {
+    const response = await axios.get(`https://v3.football.api-sports.io/fixtures?from=${formattedDate}&to=2024-07-15&league=4&season=2024`, {
       headers: {'x-apisports-key': process.env.x_apisports_key}});
 
     // loop through every fixture
@@ -23,9 +28,10 @@ const fetchMatches = async () => {
         if (fixture.status.short === "FT") {
           logger.info("Ended match found: " + teams.home.name + " - " + teams.away.name)
           // insert winner (team name as string) according to fixture result
-          const winner = teams.home.winner ? teams.home.name : teams.away.winner ? teams.away.name : 'draw'
+          let winner = teams.home.winner ? teams.home.name : teams.away.winner ? teams.away.name : 'draw'
           // search for the match in database according to the unique datetime of the match and if not already updated (by checking if winner=null)
           // update the match to contain the goals and the winner
+          if (winner === "Türkiye") winner = "Turkey"
           const updatedMatch = await Match.findOneAndUpdate(
               { date: `${fixture.date}`, winner: null }, // Filter condition
               { $set: { 
@@ -92,14 +98,3 @@ const fetchMatches = async () => {
 };
 
 module.exports = { fetchMatches };
-
-
-    /*
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-    const day = String(date.getDate()).padStart(2, '0');
-    
-    const formattedDate = `${year}-${month}-${day}`;
-    logger.info("date"formattedDate)
-    */
