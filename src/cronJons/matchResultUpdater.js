@@ -7,7 +7,6 @@ const calculatePoints = require('../utils/calculatePredictionPoints')
 
 // This function fetches matches from the API
 const fetchMatches = async () => {
-  logger.info("starting to fetch new matches")
 
   try {  
     const date = new Date();
@@ -16,7 +15,7 @@ const fetchMatches = async () => {
     const day = String(date.getDate()).padStart(2, '0');
     
     const formattedDate = `${year}-${month}-${day}`;
-    logger.info(formattedDate)
+    logger.info("starting to fetch new matches at" + date)
 
     // get all fixtures from the cup
     const response = await axios.get(`https://v3.football.api-sports.io/fixtures?from=${formattedDate}&to=2024-07-15&league=4&season=2024`, {
@@ -65,7 +64,8 @@ const fetchMatches = async () => {
           awayGoals: { $ne: null }
         })
         if (!match) {
-          logger.error("error finding match by the prediction matchId of match " + prediction.home + " - " + prediction.away)
+          logger.error("error finding match by the prediction matchId of match " + 
+            prediction.home + " - " + prediction.away )
         } else {
           // get points from the prediction
             const points = calculatePoints(match, prediction)
