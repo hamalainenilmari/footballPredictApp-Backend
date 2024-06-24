@@ -15,6 +15,7 @@ const fetchMatches = async () => {
     const day = String(date.getDate()).padStart(2, '0');
     
     const formattedDate = `${year}-${month}-${day}`;
+    
     logger.info("starting to fetch new matches at" + date)
 
     // get all fixtures from the cup
@@ -33,7 +34,7 @@ const fetchMatches = async () => {
           // update the match to contain the goals and the winner
           if (winner === "Türkiye") winner = "Turkey"
           const updatedMatch = await Match.findOneAndUpdate(
-              { date: `${fixture.date}`, winner: null }, // Filter condition
+              { date: `${fixture.date}`, home: teams.home.name, winner: null }, // Filter condition
               { $set: { 
                   homeGoals: goals.home,
                   awayGoals: goals.away,
