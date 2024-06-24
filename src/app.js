@@ -49,12 +49,12 @@ app.use(middleware.errorHandler)
 // use '*/30 * * * * *' for testing, runs every 30 secs
 // use '*/15 * * * *' in production, runs every 15 minutes
 
-cron.schedule('*/30 * * * * *', async () => {
+cron.schedule('*/15 * * * *', async () => {
   try {
     const now = new Date();
     const hour = now.getHours() + 3;
     logger.info("time now " + hour )
-    if (hour >= 10) {
+    if (hour >= 17) {
       logger.info('Cron job running...');
       await matchResultUpdater.fetchMatches();
     }
