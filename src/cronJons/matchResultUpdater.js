@@ -3,7 +3,8 @@ const Match = require('../models/match')
 const User = require('../models/user')
 const Prediction = require('../models/prediction')
 const logger = require('../utils/logger')
-const calculatePoints = require('../utils/calculatePredictionPoints')
+const calculatePoints = require('../utils/calculatePredictionPoints');
+const e = require('cors');
 
 // This function fetches matches from the API
 const fetchMatches = async () => {
@@ -46,8 +47,33 @@ const fetchMatches = async () => {
               logger.info("success updating match " + updatedMatch);
             }
            
-        }
-    }
+        } else {
+            const newMatch = new Match({
+              date: fixture.date,
+              home: teams.home.name,
+              homeLogo: teams.home.logo,
+              away: teams.away.name,
+              awayLogo: teams.away.logo,
+              homeGoals: teams.home.goals,
+              awayGoals: teams.away.goals,
+              winner: null
+          })
+          const existingMatch = await Match.findOne({
+              date: newMatch.date,
+              home: newMatch.home,
+              away: newMatch.away
+          });
+
+          if (existingMatch) {
+              console.log("Match already exists:", JSON.stringify(existingMatch));
+          } else {
+              const savedMatch = await newMatch.save()
+              console.log("Match saved successfully:", JSON.stringify(savedMatch));
+              console.log(JSON.stringify(savedMatch));
+          }
+
+      }
+  }
     
     // update the points
     const users = await User.find()
