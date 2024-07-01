@@ -24,7 +24,7 @@ matchesRouter.post('/', async (request, res) => {
     if (1 == 1) {
         try {
             // all euro matches
-            /*
+            /*z
             const matchResponse = await axios.get(
                 `https://v3.football.api-sports.io/fixtures?from=2024-06-14&to=2024-07-15&league=4&season=2024`, {
                 headers: {'x-apisports-key': process.env.x_apisports_key}
@@ -35,7 +35,7 @@ matchesRouter.post('/', async (request, res) => {
             // https://v3.football.api-sports.io/fixtures?date=2024-06-14&league=4&season=2024
             console.log("matchData: " + matchResponse.data.response)
             for (const matchDay of matchResponse.data.response) {
-                const { teams, fixture, goals } = matchDay;
+                const { teams, fixture, goals, score } = matchDay;
                 let winner
                 const matchDate = fixture.date
                 console.log(matchDate)
@@ -48,9 +48,11 @@ matchesRouter.post('/', async (request, res) => {
                     homeLogo: teams.home.logo,
                     away: teams.away.name,
                     awayLogo: teams.away.logo,
-                    homeGoals: goals.home ? goals.home : null,
-                    awayGoals: goals.away ? goals.away : null,
-                    winner: winner
+                    homeGoals: score.fulltime.home ? score.fulltime.home : null,
+                    awayGoals: score.fulltime.away ? score.fulltime.away : null,
+                    winner: winner,
+                    homeGoalsAET: goals.home ? goals.home : null,
+                    awayGoalsAET: goals.away ? goals.away : null,                    
                 })
                 const existingMatch = await Match.findOne({
                     date: newMatch.date,

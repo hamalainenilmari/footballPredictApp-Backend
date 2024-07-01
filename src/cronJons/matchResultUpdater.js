@@ -18,6 +18,7 @@ const fetchMatches = async () => {
     const formattedDate = `${year}-${month}-${day}`;
     
     logger.info("starting to fetch new matches at" + date)
+    
 
     // get all fixtures from the cup
     const response = await axios.get(`https://v3.football.api-sports.io/fixtures?from=${formattedDate}&to=2024-07-15&league=4&season=2024`, {
@@ -25,9 +26,9 @@ const fetchMatches = async () => {
 
     // loop through every fixture
     for (const matchDay of response.data.response) {
-        const {fixture, teams , goals } = matchDay;
+        const {fixture, teams , goals, score } = matchDay;
         // check if the match has ended
-        if (fixture.status.short === "FT") {
+        if (fixture.status.short === "FT" || fixture.status.short === "AET" ) {
           logger.info("Ended match found: " + teams.home.name + " - " + teams.away.name)
           // insert winner (team name as string) according to fixture result
           let winner = teams.home.winner ? teams.home.name : teams.away.winner ? teams.away.name : 'draw'
@@ -37,8 +38,8 @@ const fetchMatches = async () => {
           const updatedMatch = await Match.findOneAndUpdate(
               { date: `${fixture.date}`, home: teams.home.name, winner: null }, // Filter condition
               { $set: { 
-                  homeGoals: goals.home,
-                  awayGoals: goals.away,
+                  homeGoals: score.fulltime.home,
+                  awayGoals: score.fulltime.away,
                   winner: winner
               } },
               { new: true } // To return the updated document
