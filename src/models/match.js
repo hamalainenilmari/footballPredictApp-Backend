@@ -24,7 +24,11 @@ const matchSchema = new mongoose.Schema({
     awayGoals: {
     },
     winner: {
-    }
+    },
+    homeGoalsAET: {
+    },
+    awayGoalsAET: {
+    }   
 })
 
 matchSchema.index({ date: 1, home: 1, away: 1 }, { unique: true });
