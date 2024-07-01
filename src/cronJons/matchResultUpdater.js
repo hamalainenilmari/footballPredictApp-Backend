@@ -29,10 +29,32 @@ const fetchMatches = async () => {
     for (const matchDay of response.data.response) {
         const {fixture, teams , goals, score } = matchDay;
         // check if the match has ended
-        if (fixture.status.short === "FT" || fixture.status.short === "AET" ) {
+        if (fixture.status.short === "FT") {
           logger.info("Ended match found: " + teams.home.name + " - " + teams.away.name)
           // insert winner (team name as string) according to fixture result
           let winner = teams.home.winner ? teams.home.name : teams.away.winner ? teams.away.name : 'draw'
+
+          // search for the match in database according to the unique datetime of the match and if not already updated (by checking if winner=null)
+          // update the match to contain the goals and the winner
+          if (winner === "Türkiye") winner = "Turkey"
+          const updatedMatch = await Match.findOneAndUpdate(
+              { date: `${fixture.date}`, home: teams.home.name, winner: null }, // Filter condition
+              { $set: { 
+                  homeGoals: score.fulltime.home,
+                  awayGoals: score.fulltime.away,
+                  winner: winner
+              } },
+              { new: true } // To return the updated document
+            )
+            if (updatedMatch) {
+              logger.info("success updating match " + updatedMatch);
+            }
+           
+        } else if (fixture.status.short === "AET" ) {
+          logger.info("Ended match (AET) found: " + teams.home.name + " - " + teams.away.name)
+          // insert winner (team name as string) according to fixture result
+          let winner = (score.fulltime.home > score.fulltime.away) ? teams.home.name : 
+          (score.fulltime.away > score.fulltime.home) ? teams.away.name : 'draw'
           // search for the match in database according to the unique datetime of the match and if not already updated (by checking if winner=null)
           // update the match to contain the goals and the winner
           if (winner === "Türkiye") winner = "Turkey"
@@ -48,9 +70,8 @@ const fetchMatches = async () => {
               { new: true } // To return the updated document
             )
             if (updatedMatch) {
-              logger.info("success updating match " + updatedMatch);
+              logger.info("success updating AET match " + updatedMatch);
             }
-           
         } else {
             const newMatch = new Match({
               date: fixture.date,
