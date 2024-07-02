@@ -54,7 +54,7 @@ cron.schedule('*/15 * * * *', async () => {
     const now = new Date();
     const hour = now.getHours() + 3;
     logger.info("time now " + hour )
-    if (hour >= 17) {
+    if (hour >= 17 || hour <= 1) {
       logger.info('Cron job running...');
       await matchResultUpdater.fetchMatches();
     }

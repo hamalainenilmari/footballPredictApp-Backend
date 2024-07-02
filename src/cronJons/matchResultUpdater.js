@@ -16,7 +16,7 @@ const fetchMatches = async () => {
     const day = String(date.getDate()).padStart(2, '0');
     
     const formattedDate =  `${year}-${month}-${day}`;
-    //const formattedDate = "2024-06-30"
+    //const formattedDate = "2024-07-01"
     
     logger.info("starting to fetch new matches at" + date)
     
@@ -50,8 +50,8 @@ const fetchMatches = async () => {
               logger.info("success updating match " + updatedMatch);
             }
            
-        } else if (fixture.status.short === "AET" ) {
-          logger.info("Ended match (AET) found: " + teams.home.name + " - " + teams.away.name)
+        } else if (fixture.status.short === "AET" || fixture.status.short === "PEN") {
+          logger.info("Ended match (AET/PEN) found: " + teams.home.name + " - " + teams.away.name)
           // insert winner (team name as string) according to fixture result
           let winner = (score.fulltime.home > score.fulltime.away) ? teams.home.name : 
           (score.fulltime.away > score.fulltime.home) ? teams.away.name : 'draw'
@@ -65,12 +65,13 @@ const fetchMatches = async () => {
                   awayGoals: score.fulltime.away,
                   homeGoalsAET: goals.home,
                   awayGoalsAET: goals.away,
+                  pen: `${score.penalty.home}-${score.penalty.away}`,
                   winner: winner
               } },
               { new: true } // To return the updated document
             )
             if (updatedMatch) {
-              logger.info("success updating AET match " + updatedMatch);
+              logger.info("success updating AET/PEN match " + updatedMatch);
             }
         } else {
             const newMatch = new Match({
